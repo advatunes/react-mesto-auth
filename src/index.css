@@ -7,6 +7,9 @@
 @import url(./blocks/header/header.css);
 @import url(./blocks/header/__logo/header__logo.css);
 @import url(./blocks/header/__logo-img/header__logo-img.css);
+@import url(./blocks/header/__button/header__button.css);
+@import url(./blocks/header/__button/header__button_logout.css);
+@import url(./blocks/header/__email/header__email.css);
 
 @import url(./blocks/profile/profile.css);
 @import url(./blocks/profile/__avatar/profile__avatar.css);
@@ -51,4 +54,6 @@
 @import url(./blocks/popup/error/popup__error.css);
 @import url(./blocks/popup/error/_visible/popup__error_visible.css);
 @import url(./blocks/popup/__input/_type/_error/popup__input_type_error.css);
+
+@import url(./blocks/InfoTooltip/InfoTooltip.css);
 

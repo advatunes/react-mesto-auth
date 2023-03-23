@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Route, Routes } from 'react-router-dom';
 import Header from './Header';
 import Main from './Main';
 import Footer from './Footer';
@@ -8,6 +9,12 @@ import { CurrentUserContext } from '../contexts/CurrentUserContext';
 import EditProfilePopup from './EditProfilePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import AddPlacePopup from './AddPlacePopup';
+import Login from './Login';
+import Register from './Register';
+import InfoTooltip from './InfoTooltip';
+import ProtectedRoute from './ProtectedRoute';
+import * as Auth from './Auth.jsx';
+import { Link, useNavigate } from 'react-router-dom';
 
 function App() {
   const [selectedCard, setSelectedCard] = useState(null);
@@ -23,10 +30,36 @@ function App() {
 
   const [isLoading, setIsLoading] = React.useState(false);
 
-  // Обработчик Escape
+  const [loggedIn, setLoggedIn] = React.useState(false);
 
+  const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
+  const [statusInfoTooltip, setstatusInfoTooltip] = useState(false);
+  const navigate = useNavigate();
+
+  // Пароль и почта пользователя
+  const [formValue, setFormValue] = useState({
+    email: '',
+    password: '',
+  });
+
+
+  const handleChangeFormValue = (e) => {
+    const { name, value } = e.target;
+
+    setFormValue({
+      ...formValue,
+      [name]: value,
+    });
+  };
+  //
+
+  // Обработчик Escape
   const isOpen =
-    isEditAvatarPopupOpen || isEditProfilePopupOpen || isAddPlacePopupOpen || selectedCard;
+    isEditAvatarPopupOpen ||
+    isEditProfilePopupOpen ||
+    isAddPlacePopupOpen ||
+    selectedCard ||
+    isInfoTooltipOpen;
 
   useEffect(() => {
     function closeByEscape(evt) {
@@ -64,6 +97,33 @@ function App() {
       });
   }, []);
 
+  // Проверка token
+  useEffect(() => {
+    tokenCheck();
+  }, []);
+
+  const [email, setEmail] = useState(formValue.email);
+
+
+  const tokenCheck = () => {
+    if (localStorage.getItem('jwt')) {
+      const jwt = localStorage.getItem('jwt');
+
+      if (jwt) {
+        Auth.checkToken(jwt).then((res) => {
+          if (res) {
+
+            setEmail(res.data.email)
+
+            setLoggedIn(true);
+            navigate('/', { replace: true });
+          }
+        });
+      }
+    }
+  };
+  //
+
   function handleEditProfileClick() {
     setIsEditProfilePopupOpen(!isEditProfilePopupOpen);
   }
@@ -76,11 +136,16 @@ function App() {
     setIsAvatarPopupOpen(!isEditAvatarPopupOpen);
   }
 
+  function handleRegister() {
+    setIsInfoTooltipOpen(!isInfoTooltipOpen);
+  }
+
   function closeAllPopups() {
     setIsEditProfilePopupOpen(false);
     setIsPlacePopupOpen(false);
     setIsAvatarPopupOpen(false);
     setSelectedCard(null);
+    setIsInfoTooltipOpen(false);
   }
 
   function handleUpdateUser(data) {
@@ -106,7 +171,6 @@ function App() {
         console.log(err);
       });
   }
-
 
   function handleAddPlaceSubmit(data) {
     setIsLoading(true);
@@ -137,17 +201,6 @@ function App() {
       });
   }
 
-//   api
-// .changeLikeCardStatus(card._id, !isLiked)
-// .then((newCard) => {
-// const index = cards.findIndex((c) => c._id === card._id);
-// setCards((state) => Object.assign([...state], {[index]: newCard}));
-// })
-// .catch((err) => {
-// console.log(err);
-// });
-// }
-
   function handleDeleteCard(card) {
     api
       .deleteCard(card._id)
@@ -159,20 +212,63 @@ function App() {
       });
   }
 
+  const handleLogin = () => {
+    setLoggedIn(true);
+  };
+
   return (
     <div className='root'>
       <CurrentUserContext.Provider value={currentUser}>
-        <Header />
-        <Main
-          onEditAvatar={handleEditAvatarClick}
-          onAddPlace={handleAddPlaceClick}
-          onEditProfile={handleEditProfileClick}
-          onCardClick={setSelectedCard}
-          onCardLike={handleCardLike}
-          onCardDelete={handleDeleteCard}
-          cards={cards}
-        />
+        <Header email={email} />
+
+        <Routes>
+          <Route
+            path='/'
+            element={
+              <ProtectedRoute
+                element={Main}
+                loggedIn={loggedIn}
+                onEditAvatar={handleEditAvatarClick}
+                onAddPlace={handleAddPlaceClick}
+                onEditProfile={handleEditProfileClick}
+                onCardClick={setSelectedCard}
+                onCardLike={handleCardLike}
+                onCardDelete={handleDeleteCard}
+                cards={cards}
+              />
+            }
+          />
+          <Route
+            path='/signin'
+            element={
+              <Login
+                handleLogin={handleLogin}
+                formValue={formValue}
+                setFormValue={setFormValue}
+                onChange={handleChangeFormValue}
+              />
+            }
+          />
+          <Route
+            path='/signup'
+            element={
+              <Register
+                onStatus={setstatusInfoTooltip}
+                onRegister={handleRegister}
+                formValue={formValue}
+                onChange={handleChangeFormValue}
+              />
+            }
+          />
+        </Routes>
+
         <Footer />
+
+        <InfoTooltip
+          isOpen={isInfoTooltipOpen}
+          onClose={closeAllPopups}
+          status={statusInfoTooltip}
+        ></InfoTooltip>
 
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
 

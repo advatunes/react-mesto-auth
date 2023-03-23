@@ -1,10 +1,9 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 
 import PopupWithForm from './PopupWithForm';
 import useValidation from '../utils/useValidation';
 
 function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar, isLoading }) {
-
   const { values, setValues, error, onChange, resetValidation, formValid } = useValidation();
 
   useEffect(() => {
@@ -16,7 +15,6 @@ function EditAvatarPopup({ isOpen, onClose, onUpdateAvatar, isLoading }) {
 
   function handleSubmit(e) {
     e.preventDefault();
-
     onUpdateAvatar({
       avatar: values.avatar,
     });
