@@ -1,9 +1,9 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import * as Auth from './Auth';
+import * as Auth from '../utils/Auth';
 import '../blocks/Register/Register.css';
 
-function Register({ onRegister, onStatus,formValue, onChange}) {
+function Register({ onRegister, onStatus, formValue, onChange }) {
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
@@ -13,18 +13,17 @@ function Register({ onRegister, onStatus,formValue, onChange}) {
     Auth.register(email, password)
       .then((res) => {
         if (res !== undefined) {
-          onStatus(true)
+          onStatus(true);
           onRegister();
 
           navigate('/signin', { replace: true });
         } else {
-          onStatus(false)
+          onStatus(false);
           onRegister();
         }
       })
       .catch((err) => console.log(err));
   };
-
 
   return (
     <div className='register'>
@@ -61,7 +60,6 @@ function Register({ onRegister, onStatus,formValue, onChange}) {
           Войти
         </Link>
       </p>
-
     </div>
   );
 }

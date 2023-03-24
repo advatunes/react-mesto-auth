@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import * as Auth from './Auth';
+import * as Auth from '../utils/Auth';
 import '../blocks/Login/Login.css';
 
 function Login({ handleLogin, formValue, onChange, setFormValue }) {
@@ -12,9 +12,12 @@ function Login({ handleLogin, formValue, onChange, setFormValue }) {
     Auth.login(email, password)
       .then((data) => {
         if (data.token) {
+          localStorage.setItem('jwt', data.token);
           setFormValue({ username: '', password: '' });
           handleLogin();
           navigate('/', { replace: true });
+        } else {
+          return;
         }
       })
       .catch((err) => console.log(err));

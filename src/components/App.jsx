@@ -13,7 +13,7 @@ import Login from './Login';
 import Register from './Register';
 import InfoTooltip from './InfoTooltip';
 import ProtectedRoute from './ProtectedRoute';
-import * as Auth from './Auth.jsx';
+import * as Auth from '../utils/Auth.jsx';
 import { Link, useNavigate } from 'react-router-dom';
 
 function App() {
@@ -41,7 +41,6 @@ function App() {
     email: '',
     password: '',
   });
-
 
   const handleChangeFormValue = (e) => {
     const { name, value } = e.target;
@@ -104,22 +103,18 @@ function App() {
 
   const [email, setEmail] = useState(formValue.email);
 
-
   const tokenCheck = () => {
     if (localStorage.getItem('jwt')) {
       const jwt = localStorage.getItem('jwt');
 
-      if (jwt) {
-        Auth.checkToken(jwt).then((res) => {
-          if (res) {
+      Auth.checkToken(jwt).then((res) => {
+        if (res) {
+          setEmail(res.data.email);
 
-            setEmail(res.data.email)
-
-            setLoggedIn(true);
-            navigate('/', { replace: true });
-          }
-        });
-      }
+          setLoggedIn(true);
+          navigate('/', { replace: true });
+        }
+      });
     }
   };
   //
@@ -219,7 +214,7 @@ function App() {
   return (
     <div className='root'>
       <CurrentUserContext.Provider value={currentUser}>
-        <Header email={email} />
+        <Header email={email} setLoggedIn={setLoggedIn}/>
 
         <Routes>
           <Route

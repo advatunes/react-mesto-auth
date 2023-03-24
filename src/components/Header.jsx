@@ -2,12 +2,13 @@ import React from 'react';
 import { Link, Route, Routes, useNavigate } from 'react-router-dom';
 import logo from '../images/header__logo.svg';
 
-function Header({ email }) {
+function Header({ email, setLoggedIn }) {
   const navigate = useNavigate();
 
   function signOut() {
     localStorage.removeItem('jwt');
     navigate('/login');
+    setLoggedIn(false);
   }
 
   return (
