@@ -1,9 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, Route, Routes, useNavigate } from 'react-router-dom';
 import logo from '../images/header__logo.svg';
 
 function Header({ email, setLoggedIn }) {
   const navigate = useNavigate();
+
+  const [burgerIsOpen, setBurgerIsOpen] = useState(false);
+  function handleBurgerToggle() {
+    setBurgerIsOpen(!burgerIsOpen);
+  }
+
 
   function signOut() {
     localStorage.removeItem('jwt');
@@ -13,9 +19,15 @@ function Header({ email, setLoggedIn }) {
 
   return (
     <header className='header'>
-      <a className='header__logo' href='#'>
-        <img className='header__logo-img' src={logo} alt='логотип' />
-      </a>
+      <div className='header__container-burger'>
+        <a className='header__logo' href='#'>
+          <img className='header__logo-img' src={logo} alt='логотип' />
+        </a>
+        <button
+          className={` header__button-burger ${burgerIsOpen ? ' header__button-burger_open' : ''} `}
+          onClick={handleBurgerToggle}
+        ></button>
+      </div>
 
       <Routes>
         <Route
@@ -26,7 +38,6 @@ function Header({ email, setLoggedIn }) {
             </Link>
           }
         ></Route>
-
         <Route
           path='/signup'
           element={
@@ -36,14 +47,20 @@ function Header({ email, setLoggedIn }) {
           }
         ></Route>
 
-        <Route
+        <Route 
           path='/'
           element={
             <>
-              <p className='header__email'>{email}</p>
-              <Link to='/signin' className='header__button header__button_logout' onClick={signOut}>
-                Выйти
-              </Link>
+              <div className={` header__container-link ${burgerIsOpen ? ' header__container-link_open' : ''}`}>
+                <p className='header__email'>{email}</p>
+                <Link
+                  to='/signin'
+                  className='header__button header__button_logout'
+                  onClick={signOut}
+                >
+                  Выйти
+                </Link>
+              </div>
             </>
           }
         ></Route>

@@ -1,5 +1,5 @@
 .login {
-  width: 360px;
+  width: 100%;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -30,9 +30,9 @@
 }
 
 .login__input:focus {
-    outline:none;
-    border-bottom: 2px solid #fff;
-  }
+  outline: none;
+  border-bottom: 2px solid #fff;
+}
 
 .login__button {
   width: 100%;
@@ -50,4 +50,9 @@
 
 .login__button:hover {
   opacity: 0.85;
+}
+
+.login__container {
+  max-width: 360px;
+  margin: 0 30px;
 }
