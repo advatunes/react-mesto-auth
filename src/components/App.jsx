@@ -258,7 +258,7 @@ function App() {
         </Routes>
 
         <Footer />
-1
+
         <InfoTooltip
           isOpen={isInfoTooltipOpen}
           onClose={closeAllPopups}
