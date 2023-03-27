@@ -1,0 +1,21 @@
+.header__container-link {
+  display: flex;
+  justify-content: center;
+}
+
+@media screen and (max-width: 640px) {
+  .header__container-link {
+    width: 100%;
+    transition: all 0.5s ease-out;
+    height: 0;
+
+    opacity: 0;
+    flex-direction: column;
+    justify-content: center;
+    flex-wrap: nowrap;
+    align-content: center;
+
+    border-bottom: 1px solid rgba(84, 84, 84, 0.7);
+  }
+}
+
