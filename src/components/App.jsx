@@ -35,7 +35,7 @@ function App() {
 
   const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
   const [statusInfoTooltip, setstatusInfoTooltip] = useState(false);
-  
+
   const navigate = useNavigate();
 
   // Пароль и почта пользователя
@@ -101,23 +101,35 @@ function App() {
   // Проверка token
   useEffect(() => {
     tokenCheck();
-  }, []);
+  },[]);
+
+  // useEffect(() => {
+  //   setEmail("test");
+  // }, []);
+
+  const promise1 = new Promise((resolve, reject) => {
+
+      resolve("1");
+
+  });
 
   const [email, setEmail] = useState(formValue.email);
 
   const tokenCheck = () => {
-    if (localStorage.getItem('jwt')) {
-      const jwt = localStorage.getItem('jwt');
+    setTimeout(() => {
+      promise1.then(console.log(localStorage.getItem('jwt')))
 
-      Auth.checkToken(jwt).then((res) => {
-        if (res) {
-          setEmail(res.data.email);
-
-          setLoggedIn(true);
-          navigate('/', { replace: true });
-        }
-      });
-    }
+      if (localStorage.getItem('jwt')) {
+        const jwt = localStorage.getItem('jwt');
+        Auth.checkToken(jwt).then((res) => {
+          if (res) {
+            setEmail(res.data.email);
+            setLoggedIn(true);
+            navigate('/', { replace: true });
+          }
+        });
+      }
+    }, 5000);
   };
   //
 
@@ -212,7 +224,7 @@ function App() {
   const handleLogin = () => {
     setLoggedIn(true);
   };
-  
+
 
 
   return (

@@ -5,7 +5,7 @@ import '../blocks/Login/Login.css';
 
 function Login({ handleLogin, formValue, onChange, setFormValue }) {
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
   if (isLoading) {
     return 'loading'
   }
@@ -24,10 +24,10 @@ function Login({ handleLogin, formValue, onChange, setFormValue }) {
           return;
         }
       })
-      .finally(() => {
-        setIsLoading(false);
-      });
-      
+      // .finally(() => {
+      //   setIsLoading(false);
+      // });
+
   };
 
 
