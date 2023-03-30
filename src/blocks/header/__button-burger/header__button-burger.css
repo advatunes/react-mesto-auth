@@ -8,13 +8,15 @@
   cursor: pointer;
   background-color: transparent;
   border: none;
+
 }
 
 @media screen and (max-width: 640px) {
   .header__button-burger {
     display: block;
-
-    transition: opacity 0.2s;
+    order: 1;
+    transition: opacity 0.2s,  background-image .3s;
+    margin-right: 10px;
   }
 
   .header__button-burger:hover {

@@ -2,12 +2,18 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import * as Auth from '../utils/Auth';
 import '../blocks/Register/Register.css';
+import Preloader from '../utils/Preloader';
 
 function Register({ onRegister, onStatus, formValue, onChange }) {
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  if (isLoading) {
+    return <Preloader />;
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setIsLoading(true);
     const { email, password } = formValue;
 
     Auth.register(email, password)
@@ -22,7 +28,8 @@ function Register({ onRegister, onStatus, formValue, onChange }) {
           onRegister();
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err))
+      .finally(() => setIsLoading(false));
   };
 
   return (

@@ -13,8 +13,9 @@ import Login from './Login';
 import Register from './Register';
 import InfoTooltip from './InfoTooltip';
 import ProtectedRoute from './ProtectedRoute';
-import * as Auth from '../utils/Auth.jsx';
+import * as Auth from '../utils/Auth';
 import { Link, useNavigate } from 'react-router-dom';
+import Preloader from '../utils/Preloader';
 
 function App() {
   const [selectedCard, setSelectedCard] = useState(null);
@@ -29,7 +30,7 @@ function App() {
   const [currentUser, setCurrentUser] = useState({});
 
   const [isLoading, setIsLoading] = React.useState(false);
-  const [isLoadingPage, setIsLoadingPage] = React.useState(true);
+  const [isLoadingPage, setIsLoadingPage] = React.useState(false);
 
   const [loggedIn, setLoggedIn] = React.useState(false);
 
@@ -99,38 +100,31 @@ function App() {
   }, []);
 
   // Проверка token
-  useEffect(() => {
-    tokenCheck();
-  },[]);
-
-  // useEffect(() => {
-  //   setEmail("test");
-  // }, []);
-
-  const promise1 = new Promise((resolve, reject) => {
-
-      resolve("1");
-
-  });
-
-  const [email, setEmail] = useState(formValue.email);
-
   const tokenCheck = () => {
-    setTimeout(() => {
-      promise1.then(console.log(localStorage.getItem('jwt')))
-
-      if (localStorage.getItem('jwt')) {
-        const jwt = localStorage.getItem('jwt');
-        Auth.checkToken(jwt).then((res) => {
+    if (localStorage.getItem('jwt')) {
+      const jwt = localStorage.getItem('jwt');
+      Auth.checkToken(jwt)
+        .then((res) => {
           if (res) {
             setEmail(res.data.email);
             setLoggedIn(true);
             navigate('/', { replace: true });
           }
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally(() => {
+          setIsLoadingPage(false);
         });
-      }
-    }, 5000);
+    }
   };
+
+  useEffect(() => {
+    tokenCheck();
+  }, []);
+
+  const [email, setEmail] = useState(formValue.email);
   //
 
   function handleEditProfileClick() {
@@ -225,12 +219,15 @@ function App() {
     setLoggedIn(true);
   };
 
-
+  // Preloader
+  if (isLoadingPage) {
+    return <Preloader/>
+  }
 
   return (
     <div className='root'>
       <CurrentUserContext.Provider value={currentUser}>
-        <Header email={email} setLoggedIn={setLoggedIn}/>
+        <Header email={email} loggedIn={loggedIn} setLoggedIn={setLoggedIn} />
 
         <Routes>
           <Route
@@ -254,6 +251,7 @@ function App() {
             element={
               <Login
                 handleLogin={handleLogin}
+                setEmail={setEmail}
                 formValue={formValue}
                 setFormValue={setFormValue}
                 onChange={handleChangeFormValue}

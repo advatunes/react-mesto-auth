@@ -2,14 +2,13 @@ import React, { useState } from 'react';
 import { Link, Route, Routes, useNavigate } from 'react-router-dom';
 import logo from '../images/header__logo.svg';
 
-function Header({ email, setLoggedIn }) {
+function Header({ email, loggedIn, setLoggedIn }) {
   const navigate = useNavigate();
 
   const [burgerIsOpen, setBurgerIsOpen] = useState(false);
   function handleBurgerToggle() {
     setBurgerIsOpen(!burgerIsOpen);
   }
-
 
   function signOut() {
     localStorage.removeItem('jwt');
@@ -18,15 +17,24 @@ function Header({ email, setLoggedIn }) {
   }
 
   return (
-    <header className='header'>
-      <div className='header__container-burger'>
+    <header className={` header ${loggedIn && burgerIsOpen ? ' header_open' : ''}`}>
+      <div
+        className={` header__container-burger ${
+          loggedIn && burgerIsOpen ? ' header__container-burger_open' : ''
+        } `}
+      >
         <a className='header__logo' href='#'>
           <img className='header__logo-img' src={logo} alt='логотип' />
         </a>
-        <button
-          className={` header__button-burger ${burgerIsOpen ? ' header__button-burger_open' : ''} `}
-          onClick={handleBurgerToggle}
-        ></button>
+
+        {loggedIn && (
+          <button
+            className={` header__button-burger ${
+              loggedIn && burgerIsOpen ? ' header__button-burger_open' : ''
+            } `}
+            onClick={handleBurgerToggle}
+          ></button>
+        )}
       </div>
 
       <Routes>
@@ -47,11 +55,15 @@ function Header({ email, setLoggedIn }) {
           }
         ></Route>
 
-        <Route 
+        <Route
           path='/'
           element={
             <>
-              <div className={` header__container-link ${burgerIsOpen ? ' header__container-link_open' : ''}`}>
+              <div
+                className={` header__container-link ${
+                  loggedIn && burgerIsOpen ? ' header__container-link_open' : ''
+                }`}
+              >
                 <p className='header__email'>{email}</p>
                 <Link
                   to='/signin'
