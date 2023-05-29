@@ -80,33 +80,42 @@ function App() {
   //
 
   useEffect(() => {
-    api
-      .getUserData()
-      .then((data) => setCurrentUser(data))
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+    if (loggedIn) {
+      api
+        .getUserData()
+        .then((data) => setCurrentUser(data))
+        .catch((err) => {
+          console.log(err);
+        });
 
-  useEffect(() => {
-    api
-      .getInitialCards()
-      .then((cards) => {
-        setCards(cards);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+      api
+        .getInitialCards()
+        .then((cards) => {
+          setCards(cards);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [loggedIn]);
+
 
   // Проверка token
+
+
+  useEffect(() => {
+    tokenCheck();
+  }, []);
+
   const tokenCheck = () => {
+
     if (localStorage.getItem('jwt')) {
+      setIsLoadingPage(true);
       const jwt = localStorage.getItem('jwt');
       Auth.checkToken(jwt)
         .then((res) => {
           if (res) {
-            setEmail(res.data.email);
+            setEmail(res.email);
             setLoggedIn(true);
             navigate('/', { replace: true });
           }
@@ -119,10 +128,6 @@ function App() {
         });
     }
   };
-
-  useEffect(() => {
-    tokenCheck();
-  }, []);
 
   const [email, setEmail] = useState(formValue.email);
   //
@@ -193,7 +198,6 @@ function App() {
 
   function handleCardLike(card) {
     const isLiked = card.likes.some((i) => i._id === currentUser._id);
-
     api
       .changeLikeCardStatus(card._id, !isLiked)
       .then((newCard) => {
@@ -221,7 +225,7 @@ function App() {
 
   // Preloader
   if (isLoadingPage) {
-    return <Preloader/>
+    return <Preloader />;
   }
 
   return (

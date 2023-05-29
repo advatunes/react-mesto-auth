@@ -17,14 +17,17 @@ class Api {
   }
 
   getInitialCards() {
+
     return this._request(`${this._baseUrl}/cards`, {
       headers: this._headers,
+      credentials: 'include',
     });
   }
 
   getUserData() {
     return this._request(`${this._baseUrl}/users/me`, {
       headers: this._headers,
+      credentials: 'include',
     });
   }
 
@@ -32,6 +35,7 @@ class Api {
     return this._request(`${this._baseUrl}/users/me`, {
       method: 'PATCH',
       headers: this._headers,
+      credentials: 'include',
       body: JSON.stringify({
         name: data.name,
         about: data.about,
@@ -43,6 +47,7 @@ class Api {
     return this._request(`${this._baseUrl}/users/me/avatar`, {
       method: 'PATCH',
       headers: this._headers,
+      credentials: 'include',
       body: JSON.stringify(avatar),
     });
   }
@@ -51,6 +56,7 @@ class Api {
     return this._request(`${this._baseUrl}/cards`, {
       method: 'POST',
       headers: this._headers,
+      credentials: 'include',
       body: JSON.stringify({
         name: data.name,
         link: data.link,
@@ -62,6 +68,7 @@ class Api {
     return this._request(`${this._baseUrl}/cards/${cardId}/likes`, {
       method: isLiked ? 'PUT' : 'DELETE',
       headers: this._headers,
+      credentials: 'include',
     });
   }
 
@@ -69,14 +76,18 @@ class Api {
     return this._request(`${this._baseUrl}/cards/${cardId}`, {
       method: 'DELETE',
       headers: this._headers,
+      credentials: 'include',
     });
   }
 }
 
+
 export const api = new Api({
-  baseUrl: 'https://mesto.nomoreparties.co/v1/cohort-59',
+  baseUrl: 'https://api.advatunes.mesto.nomoredomains.monster',
   headers: {
-    authorization: 'c38dba9b-9ace-44e9-88d0-045d1a581493',
+    authorization: `Bearer ${localStorage.getItem('jwt')}`,
     'Content-Type': 'application/json',
+
   },
 });
+
